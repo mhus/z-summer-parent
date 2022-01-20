@@ -1,0 +1,121 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.example</groupId>
+  <artifactId>parent</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  
+  	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.6.2</version>
+		<relativePath/>
+	</parent>
+	
+  <properties>
+		<java.version>11</java.version>
+  	<lib.version>0.0.1-SNAPSHOT</lib.version>
+		<javax.mail.version>1.6.2</javax.mail.version>
+		<jline.version>3.19.0</jline.version>
+        <bouncycastle.version>1.67</bouncycastle.version>
+        <bouncycastle.mail.version>1.46</bouncycastle.mail.version>
+        <shiro.version>1.6.0</shiro.version>
+        <jjwt.version>0.11.2</jjwt.version>
+        <opentracingapi.version>0.33.0</opentracingapi.version>
+		<jackson.version>2.12.3</jackson.version>
+        
+  </properties>
+  
+  <dependencyManagement>
+  	<dependencies>
+  		<dependency>
+  			<groupId>com.example</groupId>
+  			<artifactId>lib</artifactId>
+  			<version>${lib.version}</version>
+  		</dependency>
+  		<dependency>
+  			<groupId>com.example</groupId>
+  			<artifactId>rest</artifactId>
+  			<version>${lib.version}</version>
+  		</dependency>
+  		
+  		
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>${javax.mail.version}</version>
+        </dependency>
+
+        <dependency>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <groupId>org.bouncycastle</groupId>
+            <version>${bouncycastle.version}</version>
+        </dependency>
+        
+	    <dependency>
+	        <groupId>org.bouncycastle</groupId>
+	        <artifactId>bcmail-jdk15</artifactId>
+	        <version>${bouncycastle.mail.version}</version>
+	    </dependency>
+        
+    <dependency>
+        <groupId>org.jline</groupId>
+        <artifactId>jline</artifactId>
+        <version>${jline.version}</version>
+    </dependency>
+
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-core</artifactId>
+            <version>${shiro.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-config-core</artifactId>
+            <version>${shiro.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-config-ogdl</artifactId>
+            <version>${shiro.version}</version>
+        </dependency>
+
+		<dependency>
+		    <groupId>io.jsonwebtoken</groupId>
+		    <artifactId>jjwt-api</artifactId>
+		    <version>${jjwt.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>io.jsonwebtoken</groupId>
+		    <artifactId>jjwt-impl</artifactId>
+		    <version>${jjwt.version}</version>
+		    <scope>runtime</scope>
+		</dependency>
+		<dependency>
+		    <groupId>io.jsonwebtoken</groupId>
+		    <artifactId>jjwt-jackson</artifactId>
+		    <version>${jjwt.version}</version>
+		    <scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+	        <groupId>io.opentracing</groupId>
+		    <artifactId>opentracing-api</artifactId>
+	        <version>${opentracingapi.version}</version>
+		</dependency>
+		<dependency>
+	        <groupId>io.opentracing</groupId>
+		    <artifactId>opentracing-util</artifactId>
+	        <version>${opentracingapi.version}</version>
+		</dependency>
+  		
+	<dependency>
+	    <groupId>com.fasterxml.jackson.core</groupId>
+	    <artifactId>jackson-databind</artifactId>
+	    <version>${jackson.version}</version>
+	</dependency>
+  		
+  	</dependencies>
+  </dependencyManagement>
+  
+</project>
