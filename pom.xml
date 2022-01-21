@@ -15,7 +15,7 @@
 	<properties>
 		<summer-lib.version>0.0.1-SNAPSHOT</summer-lib.version>
 		<summer-junit.version>0.0.1-SNAPSHOT</summer-junit.version>
-		
+
 		<java.version>11</java.version>
 		<javax.mail.version>1.6.2</javax.mail.version>
 		<jline.version>3.19.0</jline.version>
@@ -26,10 +26,31 @@
 		<opentracingapi.version>0.33.0</opentracingapi.version>
 		<jackson.version>2.12.3</jackson.version>
 
-        <docker-java.version>3.2.5</docker-java.version>
-        <reflections.version>0.9.12</reflections.version>
+		<docker-java.version>3.2.5</docker-java.version>
+		<reflections.version>0.9.12</reflections.version>
 
+		<tmpl.plugin.version>1.1.0</tmpl.plugin.version>
+		<license.plugin.version>2.11.1</license.plugin.version>
+		<nexus.plugin.version>1.6.8</nexus.plugin.version>
+		<gpg.plugin.version>3.0.1</gpg.plugin.version>
 	</properties>
+
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<scm>
+		<url>https://github.com/mhus/mhus-parent</url>
+		<connection>scm:git:https://github.com/summerclouds/summer-parent/</connection>
+		<tag>HEAD</tag>
+	</scm>
+
+	<url>https://www.summerclouds.org</url>
+	<inceptionYear>2022</inceptionYear>
 
 	<dependencyManagement>
 		<dependencies>
@@ -38,11 +59,11 @@
 				<artifactId>summer-lib</artifactId>
 				<version>${summer-lib.version}</version>
 			</dependency>
-		    <dependency>
-		        <groupId>org.summerclouds</groupId>
-		        <artifactId>summer-junit</artifactId>
+			<dependency>
+				<groupId>org.summerclouds</groupId>
+				<artifactId>summer-junit</artifactId>
 				<version>${summer-junit.version}</version>
-		    </dependency>
+			</dependency>
 
 			<dependency>
 				<groupId>com.sun.mail</groupId>
@@ -120,12 +141,196 @@
 			</dependency>
 
 			<dependency>
-			    <groupId>org.reflections</groupId>
-			    <artifactId>reflections</artifactId>
-			    <version>${reflections.version}</version>
+				<groupId>org.reflections</groupId>
+				<artifactId>reflections</artifactId>
+				<version>${reflections.version}</version>
 			</dependency>
 
 		</dependencies>
 	</dependencyManagement>
 
+	<build>
+		<defaultGoal>install</defaultGoal>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>release</id>
+			<distributionManagement>
+				<snapshotRepository>
+					<id>ossrh</id>
+					<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+				</snapshotRepository>
+				<repository>
+					<id>ossrh</id>
+					<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+				</repository>
+			</distributionManagement>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.sonatype.plugins</groupId>
+						<artifactId>nexus-staging-maven-plugin</artifactId>
+						<version>${nexus.plugin.version}</version>
+						<extensions>true</extensions>
+						<configuration>
+							<serverId>ossrh</serverId>
+							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+							<autoReleaseAfterClose>true</autoReleaseAfterClose>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>gpg-maven-plugin</artifactId>
+						<version>${gpg.plugin.version}</version>
+						<configuration>
+							<passphrase>${gpg.passphrase}</passphrase>
+						</configuration>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>${source.plugin}</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>de.mhus.mvn.plugin</groupId>
+						<version>${tmpl.plugin.version}</version>
+						<artifactId>tmpl-maven-plugin</artifactId>
+						<configuration>
+							<files>
+								<directory>${basedir}</directory>
+								<includes>
+									<include>**/*</include>
+								</includes>
+							</files>
+						</configuration>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>tmpl</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>de.mhus.mvn.plugin</groupId>
+						<artifactId>license-maven-plugin</artifactId>
+						<version>${license.plugin.version}</version>
+						<configuration>
+							<aggregate>true</aggregate>
+							<header>com/mycila/maven/plugin/license/templates/APACHE-2.txt</header>
+							<properties>
+								<owner>Mike Hummel</owner>
+								<email>mh@mhus.de</email>
+							</properties>
+							<excludes>
+								<exclude>README.*</exclude>
+								<exclude>readme.*</exclude>
+								<exclude>LICENSE</exclude>
+								<exclude>LICENSE_HEADER</exclude>
+								<exclude>src/test/resources/**</exclude>
+								<exclude>src/main/resources/**</exclude>
+								<exclude>mhu-liferay-theme/src/main/webapp/**</exclude>
+								<exclude>docs/**</exclude>
+							</excludes>
+						</configuration>
+						<executions>
+							<execution>
+								<goals>
+									<goal>format</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+
+		</profile>
+
+		<profile>
+			<id>apache-rat</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.rat</groupId>
+						<artifactId>apache-rat-plugin</artifactId>
+						<version>${apache.rat.plugin}</version>
+						<executions>
+							<execution>
+								<phase>verify</phase>
+								<goals>
+									<goal>check</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<reportFile>${project.build.directory}/${project.build.finalName}.rat</reportFile>
+							<excludeSubProjects>false</excludeSubProjects>
+							<excludes>
+								<exclude>**/*.pub</exclude>
+								<exclude>**/target/**/*</exclude>
+								<exclude>**/.git/**/*</exclude>
+								<exclude>**/.idea/**/*</exclude>
+								<exclude>**/*.iml</exclude>
+								<exclude>**/*.ipr</exclude>
+								<exclude>**/*.iws</exclude>
+								<exclude>**/.*</exclude>
+								<exclude>**/eclipse-classes/**/*</exclude>
+								<exclude>**/dependency-reduced-pom.xml</exclude>
+								<exclude>**/.settings/**</exclude>
+								<exclude>**/bin/**</exclude>
+								<exclude>**/goal.txt</exclude>
+								<exclude>**/grep.txt</exclude>
+								<exclude>**/edit.txt</exclude>
+								<exclude>**/wc.txt</exclude>
+								<exclude>**/foo</exclude>
+								<exclude>**/org.ops4j.pax.exam.TestContainerFactory</exclude>
+								<exclude>**/maven-metadata-local.xml</exclude>
+								<exclude>**/*.mf</exclude>
+								<exclude>**/*.json</exclude>
+								<exclude>**/*.adoc</exclude>
+								<exclude>**/*.md</exclude>
+								<exclude>**/src/test/resources/wirings/*</exclude>
+								<exclude>**/*.key</exclude>
+								<exclude>**/*.id_rsa</exclude>
+								<exclude>.repository/**</exclude>
+								<exclude>**/*.jar</exclude>
+								<exclude>**/*.ini</exclude>
+								<exclude>**/*.htm</exclude>
+								<exclude>**/*.log</exclude>
+								<exclude>**/*.js.map</exclude>
+								<exclude>**/*.sec</exclude>
+								<exclude>**/*.cnf</exclude>
+								<exclude>**/*.log</exclude>
+								<exclude>**/*.sec.plain</exclude>
+								<exclude>**/*.versionsBackup</exclude>
+								<exclude>**/*.rptdesign</exclude>
+								<exclude>**/*.twig</exclude>
+							</excludes>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+
+	</profiles>
 </project>
